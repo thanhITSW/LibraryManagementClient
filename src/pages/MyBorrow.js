@@ -97,29 +97,29 @@ export const MyBorrow = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {[...books]
-                        .sort((a, b) => a.returned - b.returned)
-                        .map(book => (
-                            <tr key={book.bookId}>
-                                <td>
-                                    <button className="details-button" onClick={() => handleViewBorrowClick(book.bookId)}>
-                                        View
-                                    </button>
-                                </td>
-                                <td>{book.title}</td>
-                                <td>{book.borrowDate}</td>
-                                <td>{book.returnDate}</td>
-                                <td>{book.returned ? "Yes" : "No"}</td>
-                                {/* <td>{new Date(book.creation_date).toLocaleDateString()}</td> */}
-                                <td>
-                                    {(!book.returned) && (
-                                        <button className="cancel-button" onClick={() => confirmReturnBorrow(book.bookId)}>
-                                            Return
+                        {[...books]
+                            .sort((a, b) => a.returned - b.returned)
+                            .map(book => (
+                                <tr key={book.id}>
+                                    <td>
+                                        <button className="details-button" onClick={() => handleViewBorrowClick(book.bookId)}>
+                                            View
                                         </button>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td>{book.title}</td>
+                                    <td>{book.borrowDate}</td>
+                                    <td>{book.returnDate}</td>
+                                    <td>{book.returned ? "Yes" : "No"}</td>
+                                    {/* <td>{new Date(book.creation_date).toLocaleDateString()}</td> */}
+                                    <td>
+                                        {(!book.returned) && (
+                                            <button className="cancel-button" onClick={() => confirmReturnBorrow(book.bookId)}>
+                                                Return
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
 
                 </table>

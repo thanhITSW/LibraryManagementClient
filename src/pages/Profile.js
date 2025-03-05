@@ -1,9 +1,14 @@
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
 import React, { useState, useEffect } from "react";
 import '../assets/css/Profile.css';
 import api from "../services/api";
 import AlertMessage from "../utils/AlertMessage";
 import { getErrorMessage } from "../utils/ErrorHandler";
-import ChangePassword from "../components/ChangePassword";
+import { InputOtp } from 'primereact/inputotp'
+import { Dialog } from 'primereact/dialog';
 
 export const Profile = () => {
 
@@ -16,9 +21,23 @@ export const Profile = () => {
         dob: "",
         email: ""
     });
+
+    const [PasswordDetails, setPasswordDetails] = useState({
+        currentPassword: '',
+        newPassword: '',
+    });
+
+    const [newContact, setNewContact] = useState({
+        email: "",
+        phone: ""
+    });
     
     const [alert, setAlert] = useState(null);
-    const [isModalOpenPassword, setIsModalOpenPassword] = useState(false);
+    const [activeMenu, setActiveMenu] = useState("profile");
+    const [showOtpDialog, setShowOtpDialog] = useState(false);
+    const [otpValue, setOtpValue] = useState("");
+    const [otpType, setOtpType] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const showAlert = (message, type = "success") => {
         setAlert({ message, type });
@@ -26,6 +45,7 @@ export const Profile = () => {
     };
     
     useEffect(() => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         const fetchUserData = async () => {
             try {
@@ -33,87 +53,279 @@ export const Profile = () => {
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 setUser(response.data);
+                setLoading(false);
             } catch (error) {
                 const { message, statusMessage } = getErrorMessage(error.response);
                 showAlert(message, statusMessage);
+                setLoading(false);
             }
         };
         fetchUserData();
     }, []);
 
-    const handleUpdateProfile = async () => {
-
-        const { name, phone, address, email, url_avatar } = user;
-
-        if (!name || !phone || !address || !email || !url_avatar) {
-            showAlert("Please fill in all fields!", "warning");
-            return; 
-        }
-
+    const handleRequestOtp = async (type) => {
         try {
-            await api.patch("", user,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setAlert({ type: "success", message: "Profile updated successfully!" });
+            setLoading(true);
+            const endpoint = type === "email" ? "/user/accounts/request-change-mail" : "/user/accounts/request-change-phone";
+            const payload = type === "email" ? { email: newContact.email } : { phone: newContact.phone };
+
+            if (!payload.email && !payload.phone) {
+                showAlert(`Please enter a new ${type}`, "warning");
+                return;
+            }
+
+            await api.post(endpoint, payload, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setOtpType(type);
+            setShowOtpDialog(true);
+            showAlert(`OTP has been sent to your ${type}`, "success");
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             const { message, statusMessage } = getErrorMessage(error.response);
             showAlert(message, statusMessage);
         }
     };
 
-    const PasswordModel = () => {
-        setIsModalOpenPassword(true)
+    const handleVerifyOtp = async () => {
+        try {
+            setLoading(true);
+            const endpoint = otpType === "email" ? "/user/accounts/verify-change-mail" : "/user/accounts/verify-change-phone";
+            const payload = {
+                [otpType]: otpType === "email" ? newContact.email : newContact.phone,
+                otp: otpValue
+            };
+
+            const response = await api.post(endpoint, payload, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if(response.status === 200) {
+                setUser(prev => ({
+                    ...prev,
+                    [otpType]: payload[otpType]
+                }));
+                
+                setShowOtpDialog(false);
+                setNewContact({
+                    email: "",
+                    phone: ""
+                });
+                setOtpValue("");
+                showAlert(`${otpType} updated successfully!`, "success");
+                setLoading(false);
+            }
+        } catch (error) {
+            setLoading(false);
+            const { message, statusMessage } = getErrorMessage(error.response);
+            showAlert(message, statusMessage);
+        }
     };
 
-    const closeModalPassword = (isAdded = false, message = "") => {
+    const handleChangeFieldPassword = (e, field) => {
+        setPasswordDetails(prevState => ({
+            ...prevState,
+            [field]: e.target.value
+        }));
+    };
 
-        if (isAdded === true) {
-            showAlert(message, "success");
+    const handleChangePassword = async () => {
+        setLoading(true);
+        if (!PasswordDetails) return;
+
+        if (!PasswordDetails.currentPassword || !PasswordDetails.newPassword) {
+            showAlert("Please fill in all fields.", "warning");
+            return;
         }
 
-        setIsModalOpenPassword(false);
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            showAlert("You need to login", "warning");
+            return;
+        }
+
+        const requestData = {
+            oldPassword: PasswordDetails.currentPassword,
+            newPassword: PasswordDetails.newPassword
+        };
+
+        api.put("/user/accounts/change-password", requestData, 
+            { headers: { Authorization: `Bearer ${token}` } })
+        .then(response => {
+            showAlert(response.data.message, "success");
+            setPasswordDetails({
+                currentPassword: '',
+                newPassword: '',
+            });
+            setLoading(false);
+        })
+        .catch(error => {
+            const { message, statusMessage } = getErrorMessage(error.response);
+            showAlert(message, statusMessage);
+            setLoading(false);
+        });
     };
 
+
     const handleLogout = async () => {
+        setLoading(true);
         const response = await api.post("/common/auth/logout", {token})
         if (response.status === 204) {
+            setLoading(false);
             localStorage.clear();
             window.location.href = "/";
         }
     };
     
+    const renderContent = () => {
+        switch(activeMenu) {
+            case "profile":
+                return (
+                    <div className="profile-info">
+                        <h2>Profile</h2>
+                        <div className="profile-avatar">
+                            <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" alt="Avatar" />
+                        </div>
+                        <label>Email:</label>
+                        <input type="text" value={user.email} disabled/>
+                        <label>First Name:</label>
+                        <input type="text" value={user.firstName} disabled />
+                        <label>Last Name:</label>
+                        <input type="text" value={user.lastName} disabled />
+                        <label>Day of birth:</label>
+                        <input type="text" value={user.dob} disabled />
+                        <label>Phone:</label>
+                        <input type="text" value={user.phone} disabled />
+                    </div>
+                );
+            case "change-password":
+                return (
+                    <div className="profile-info">
+                        <h2>Change Password</h2>
+                        <label>Current Password:</label>
+                        <input 
+                            type="password" 
+                            value={PasswordDetails.currentPassword}
+                            onChange={(e) => handleChangeFieldPassword(e, "currentPassword")}
+                        />
+                        <label>New Password:</label>
+                        <input 
+                            type="password" 
+                            value={PasswordDetails.newPassword}
+                            onChange={(e) => handleChangeFieldPassword(e, "newPassword")}
+                        />
+                        <button onClick={handleChangePassword}>Change Password</button>
+                    </div>
+                );
+            case "change-email":
+                return (
+                    <div className="profile-info">
+                        <h2>Change Email</h2>
+                        <label>New Email:</label>
+                        <input 
+                            type="email" 
+                            value={newContact.email}
+                            onChange={(e) => setNewContact({...newContact, email: e.target.value})} 
+                        />
+                        <button onClick={() => handleRequestOtp("email")}>
+                            Change Email
+                        </button>
+                    </div>
+                );
+            case "change-phone":
+                return (
+                    <div className="profile-info">
+                        <h2>Change Phone</h2>
+                        <label>New Phone:</label>
+                        <input 
+                            type="tel" 
+                            value={newContact.phone}
+                            onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
+                        />
+                        <button onClick={() => handleRequestOtp("phone")}>
+                            Change Phone
+                        </button>
+                    </div>
+                );
+            case "logout":
+                handleLogout();
+                return null;
+            default:
+                return null;
+        }
+    };
+
+    if (loading) return <div className="loading-spinner"></div>;
+
     return (
         <>
             {alert && <AlertMessage message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
-            <div className="profile-container">
-                <ChangePassword
-                    visible={isModalOpenPassword}
-                    onClose={closeModalPassword}
-                />
-                <h2>Profile</h2>
-                <div className="profile-avatar">
-                    <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" alt="Avatar" />
+            <div className="profile-wrapper">
+                <div className="sidebar">
+                    <ul className="sidebar-menu">
+                        <li 
+                            className={activeMenu === "profile" ? "active" : ""}
+                            onClick={() => setActiveMenu("profile")}
+                        >
+                            Profile
+                        </li>
+                        <li 
+                            className={activeMenu === "change-password" ? "active" : ""}
+                            onClick={() => setActiveMenu("change-password")}
+                        >
+                            Change Password
+                        </li>
+                        <li 
+                            className={activeMenu === "change-email" ? "active" : ""}
+                            onClick={() => setActiveMenu("change-email")}
+                        >
+                            Change Email
+                        </li>
+                        <li 
+                            className={activeMenu === "change-phone" ? "active" : ""}
+                            onClick={() => setActiveMenu("change-phone")}
+                        >
+                            Change Phone
+                        </li>
+                        <li 
+                            className={activeMenu === "logout" ? "active" : ""}
+                            onClick={() => setActiveMenu("logout")}
+                        >
+                            Logout
+                        </li>
+                    </ul>
                 </div>
-                <div className="profile-info">
-                    <label>Email:</label>
-                    <input type="text" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} />
-                    <label>First Name:</label>
-                    <input type="text" value={user.firstName} onChange={(e) => setUser({ ...user, firstName: e.target.value })} />
-                    <label>Last Name:</label>
-                    <input type="text" value={user.lastName} onChange={(e) => setUser({ ...user, lastName: e.target.value })} />
-                    <label>Day of birth:</label>
-                    <input type="text" value={user.dob}  onChange={(e) => setUser({ ...user, dob: e.target.value})} />
-                    <label>Phone:</label>
-                    <input type="text" value={user.phone} onChange={(e) => setUser({ ...user, phone: e.target.value })} />
-                    <button onClick={handleUpdateProfile}>Update Information</button>
+                <div className="profile-container">
+                    {renderContent()}
                 </div>
-                <button className="change-password-btn" onClick={() => PasswordModel()}>
-                    Change Password
-                </button>
-                <button className="logout-btn" onClick={handleLogout}>
-                    Logout
-                </button>
             </div>
+
+            <Dialog 
+                header={`Enter OTP for ${otpType}`} 
+                visible={showOtpDialog} 
+                style={{ width: '30vw' }}
+                className="custom-otp-dialog"
+                onHide={() => setShowOtpDialog(false)}
+            >
+                <div className="otp-container">
+                    <InputOtp 
+                        value={otpValue} 
+                        onChange={(e) => setOtpValue(e.value)}
+                        length={6}
+                        integerOnly
+                    />
+                    <button 
+                        onClick={handleVerifyOtp}
+                        className="custom-otp-button"
+                        style={{ marginTop: '1rem' }}
+                    >
+                        Verify OTP
+                    </button>
+                </div>
+            </Dialog>
         </>
     );
 };

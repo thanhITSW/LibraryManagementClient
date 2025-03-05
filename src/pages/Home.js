@@ -224,7 +224,7 @@ export const Home = () => {
                         <>
                             {currentProducts.map((product) => (
                                 <BookCard
-                                    key={product.id}
+                                    key={product.title}
                                     product={product}
                                     onAddToCart={handleAddToCart}
                                     onClick={handleProductClick}
