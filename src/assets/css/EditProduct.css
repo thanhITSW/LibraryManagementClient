@@ -1,0 +1,104 @@
+.product-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+}
+
+.product-edit-form h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.p-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.p-field label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.p-inputtext, 
+.p-inputtextarea, 
+.p-inputnumber {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.p-inputtext:focus, 
+.p-inputtextarea:focus, 
+.p-inputnumber:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.p-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.p-button-success {
+    background: #28a745;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.p-button-success:hover {
+    background: #218838;
+}
+
+.p-button-secondary {
+    background: #6c757d;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.p-button-secondary:hover {
+    background: #5a6268;
+}
+
+.product-edit-form .p-field:nth-child(n+6) {
+    margin-top: 10px;
+}
+
+.image-preview-img {
+    width: 60%;
+    height: 60%;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite; 
+    margin: auto;
+    display: block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

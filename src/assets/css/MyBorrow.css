@@ -1,0 +1,76 @@
+.my-borrows {
+    padding: 20px;
+}
+
+.borrows-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 100px;
+}
+
+.borrows-table th, .borrows-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.borrows-table th {
+    background-color: #f4f4f4;
+}
+
+.borrows-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.status.processing {
+    color: orange;
+    font-weight: bold;
+}
+
+.status.delivering {
+    color: blue;
+    font-weight: bold;
+}
+
+.status.delivered {
+    color: green;
+    font-weight: bold;
+}
+
+.status.canceled {
+    color: red;
+    font-weight: bold;
+}
+
+.cancel-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 12px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cancel-button:hover {
+    background-color: #d9363e;
+}
+
+.details-button {
+    background-color: #16b0b6;
+    color: white;
+    border: none;
+    padding: 12px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.details-button:hover {
+    background-color: #0f8e92;
+}
+
+.payment-price {
+    color: #16b0b6;
+}

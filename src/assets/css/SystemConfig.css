@@ -1,0 +1,71 @@
+.maintenance-card {
+    transition: all 0.3s ease-in-out;
+}
+
+.maintenance-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.status-indicator {
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    animation: pulse 2s infinite;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.maintenance-on {
+    background-color: #f59e0b; /* Màu vàng ám chỉ bảo trì */
+}
+
+.maintenance-off {
+    background-color: #10b981; /* Màu xanh ám chỉ hoạt động */
+}
+
+.p-togglebutton {
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.p-togglebutton:hover:enabled {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Pulse animation for status indicator */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .maintenance-card {
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    .p-togglebutton {
+        width: 12rem !important;
+        font-size: 1rem !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .status-indicator {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
