@@ -95,9 +95,9 @@ const EditProductModel = ({ visible, productId, onClose }) => {
         }
 
         setLoading(true)
-        api.put(`/admin/books/${productId}`, data, {
+        api.put(`/admin/books/${productId}`, data, { requiresAuth: true },
+            {
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         })
@@ -107,9 +107,9 @@ const EditProductModel = ({ visible, productId, onClose }) => {
                 if (selectedImage) {   
                     formData.append("file", selectedImage);
                     
-                    api.post(`/admin/books/${updatedProduct.id}/upload`, formData, {
+                    api.post(`/admin/books/${updatedProduct.id}/upload`, formData, { requiresAuth: true },
+                    {
                         headers: {
-                            Authorization: `Bearer ${token}`,
                             "Content-Type": "multipart/form-data"
                         }
                     })

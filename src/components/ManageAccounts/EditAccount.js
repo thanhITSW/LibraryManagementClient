@@ -21,11 +21,10 @@ const EditAccountModel = ({ visible, accountId, onClose }) => {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
         if (accountId) {
             setLoading(true);
             api.get(`/admin/accounts/${accountId}`, 
-                { headers: { Authorization: `Bearer ${token}` } }
+                { requiresAuth: true }
             )
                 .then(response => {
                     const data = response.data
@@ -89,9 +88,8 @@ const EditAccountModel = ({ visible, accountId, onClose }) => {
         };
 
         setLoading(true);
-        api.put(`/admin/accounts/${accountId}`, requestData, {
+        api.put(`/admin/accounts/${accountId}`, requestData, { requiresAuth: true }, {
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         })

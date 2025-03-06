@@ -13,6 +13,7 @@ import { Dialog } from 'primereact/dialog';
 export const Profile = () => {
 
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
     const [user, setUser] = useState({
         lastName: "",
@@ -46,11 +47,10 @@ export const Profile = () => {
     
     useEffect(() => {
         setLoading(true);
-        const token = localStorage.getItem("token");
         const fetchUserData = async () => {
             try {
                 const response = await api.get("/common/accounts/my-info",
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { requiresAuth: true }
                 );
                 setUser(response.data);
                 setLoading(false);
@@ -74,9 +74,7 @@ export const Profile = () => {
                 return;
             }
 
-            await api.post(endpoint, payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.post(endpoint, payload, { requiresAuth: true });
 
             setOtpType(type);
             setShowOtpDialog(true);
@@ -98,9 +96,7 @@ export const Profile = () => {
                 otp: otpValue
             };
 
-            const response = await api.post(endpoint, payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.post(endpoint, payload, { requiresAuth: true });
 
             if(response.status === 200) {
                 setUser(prev => ({
@@ -153,7 +149,7 @@ export const Profile = () => {
         };
 
         api.put("/user/accounts/change-password", requestData, 
-            { headers: { Authorization: `Bearer ${token}` } })
+            { requiresAuth: true })
         .then(response => {
             showAlert(response.data.message, "success");
             setPasswordDetails({
@@ -272,24 +268,28 @@ export const Profile = () => {
                         >
                             Profile
                         </li>
-                        <li 
-                            className={activeMenu === "change-password" ? "active" : ""}
-                            onClick={() => setActiveMenu("change-password")}
-                        >
-                            Change Password
-                        </li>
-                        <li 
-                            className={activeMenu === "change-email" ? "active" : ""}
-                            onClick={() => setActiveMenu("change-email")}
-                        >
-                            Change Email
-                        </li>
-                        <li 
-                            className={activeMenu === "change-phone" ? "active" : ""}
-                            onClick={() => setActiveMenu("change-phone")}
-                        >
-                            Change Phone
-                        </li>
+                        {role === "ROLE_USER" && (
+                            <>
+                                <li 
+                                    className={activeMenu === "change-password" ? "active" : ""}
+                                    onClick={() => setActiveMenu("change-password")}
+                                >
+                                    Change Password
+                                </li>
+                                <li 
+                                    className={activeMenu === "change-email" ? "active" : ""}
+                                    onClick={() => setActiveMenu("change-email")}
+                                >
+                                    Change Email
+                                </li>
+                                <li 
+                                    className={activeMenu === "change-phone" ? "active" : ""}
+                                    onClick={() => setActiveMenu("change-phone")}
+                                >
+                                    Change Phone
+                                </li>
+                            </>
+                        )}
                         <li 
                             className={activeMenu === "logout" ? "active" : ""}
                             onClick={() => setActiveMenu("logout")}

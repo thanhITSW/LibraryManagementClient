@@ -30,9 +30,7 @@ export const SystemConfigs = () => {
         }
 
         setLoading(true);
-        api.get(`/admin/system-config`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(`/admin/system-config`, { requiresAuth: true })
             .then(response => {
                 const data = response.data
                 setIsMaintenanceMode(data.maintenanceMode);
@@ -50,10 +48,7 @@ export const SystemConfigs = () => {
 
         api.post(`/admin/system-config/maintenance`, {
             maintenanceMode: !isMaintenanceMode
-        },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+        },{ requiresAuth: true })
             .then(response => {
                 setIsMaintenanceMode(!isMaintenanceMode);
                 setLoading(false);

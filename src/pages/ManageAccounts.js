@@ -73,9 +73,7 @@ export const ManageAccounts = () => {
         }
 
         setLoading(true);
-        api.get(`/admin/accounts`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(`/admin/accounts`, { requiresAuth: true })
             .then(response => {
                 setAccounts(response.data);
                 setTotalRecords(response.data.length);
@@ -100,9 +98,7 @@ export const ManageAccounts = () => {
 
         const url = searchTerm.trim() !== "" ? `/admin/accounts/search?${params.toString()}` : `/admin/accounts`;
 
-        api.get(url, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(url, { requiresAuth: true })
             .then(response => {
                 const data = response.data.content || response.data || [];
                 setAccounts(data);
@@ -170,7 +166,7 @@ export const ManageAccounts = () => {
 
         api.delete(
             `/admin/accounts/${rowData.id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            { requiresAuth: true }
         )
             .then(response => {
                 setAccounts(prevAccounts =>
@@ -224,7 +220,7 @@ export const ManageAccounts = () => {
                 ) : (
                     <>
                         <DataTable value={accounts.slice(first, first + rowsPerPage)} paginator={false} responsiveLayout="scroll">
-                            <Column field="email" header="email" sortable />
+                            <Column field="email" header="Email" sortable />
                             <Column field="firstName" header="First Name" sortable />
                             <Column field="lastName" header="Last Name" sortable />
                             <Column field="dob" header="Day of birth" sortable />

@@ -76,9 +76,7 @@ export const ManageProducts = () => {
         }
 
         setLoading(true);
-        api.get(`/admin/books`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(`/admin/books`, { requiresAuth: true })
             .then(response => {
                 setProducts(response.data);
                 setTotalRecords(response.data.length);
@@ -103,9 +101,7 @@ export const ManageProducts = () => {
 
         const url = searchTerm.trim() !== "" ? `/admin/books/search?${params.toString()}` : `/admin/books`;
 
-        api.get(url, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(url, { requiresAuth: true })
             .then(response => {
                 const data = response.data.content || response.data || [];
                 setProducts(data);
@@ -178,7 +174,7 @@ export const ManageProducts = () => {
 
         api.delete(
             `/admin/books/${rowData.id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            { requiresAuth: true }
         )
             .then(response => {
                 setProducts(prevProducts =>
@@ -213,12 +209,11 @@ export const ManageProducts = () => {
         formData.append("file", file);
 
         try {
-            const response = await api.post("/admin/books/import-csv", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+            const response = await api.post("/admin/books/import-csv", formData, { requiresAuth: true }, 
+                {headers: {
+                    "Content-Type": "multipart/form-data"
+                }}
+            );
 
             if(response.status === 200){
                 showAlert(response.data.message, "success");

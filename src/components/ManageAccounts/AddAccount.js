@@ -76,9 +76,8 @@ const AddAccountModel = ({ visible, onClose }) => {
         };
 
         setLoading(true);
-        api.post(`/admin/accounts`, requestData, {
+        api.post(`/admin/accounts`, requestData, { requiresAuth: true } ,{
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         })

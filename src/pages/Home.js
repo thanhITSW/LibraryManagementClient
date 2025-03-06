@@ -186,9 +186,7 @@ export const Home = () => {
             return;
         }
 
-        api.post(`/user/borrowing/borrow`, { bookId: productId }, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.post(`/user/borrowing/borrow`, { bookId: productId }, { requiresAuth: true })
             .then(response => {
                 showAlert(response.data.message, "success");
             })

@@ -26,9 +26,7 @@ export const MyBorrow = () => {
 
     useEffect(() => {
         setLoading(true);
-        api.get(`/user/borrowing/borrowed-books`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get(`/user/borrowing/borrowed-books`, { requiresAuth: true })
             .then(response => {
                 setBooks(Array.isArray(response.data) ? response.data : []);
                 setLoading(false);
@@ -48,7 +46,7 @@ export const MyBorrow = () => {
     const handleCancelBorrow = () => {
         api.post(
             `/user/borrowing/return`, { bookId: pendingBorrowId },
-            { headers: { Authorization: `Bearer ${token}` } }
+            { requiresAuth: true }
         )
             .then(response => {
                 showAlert(response.data.message, "success");

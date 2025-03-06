@@ -81,9 +81,8 @@ const AddProductModel = ({ visible, onClose }) => {
         }
 
         setLoading(true)
-        api.post(`/admin/books`, data, {
+        api.post(`/admin/books`, data, { requiresAuth: true }, {
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         })
@@ -95,9 +94,8 @@ const AddProductModel = ({ visible, onClose }) => {
 
                 if (selectedImage) {   
                     formData.append("file", selectedImage);
-                    api.post(`/admin/books/${addProduct.id}/upload`, formData, {
+                    api.post(`/admin/books/${addProduct.id}/upload`, formData, { requiresAuth: true }, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
                             "Content-Type": "multipart/form-data"
                         }
                     })
