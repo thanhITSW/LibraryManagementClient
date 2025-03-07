@@ -1,0 +1,31 @@
+.verification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 1rem;
+}
+
+.verification-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Đảm bảo button full width trên mobile */
+@media (max-width: 768px) {
+    .verification-card {
+        margin: 0 1rem;
+    }
+    
+    .p-button {
+        width: 100%;
+    }
+}
+
+.p-button-success{
+    margin-top: 20px;
+}

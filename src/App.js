@@ -5,8 +5,10 @@ import { MyBorrow } from "./pages/MyBorrow";
 import { ManageProducts } from "./pages/ManageProducts";
 import { ManageAccounts } from "./pages/ManageAccounts";
 import { SystemConfigs } from "./pages/SystemConfig";
+import { ManageActivityLog } from "./pages/ManageActivityLog";
 import { Login } from "./pages/Login";
 import { Profile } from "./pages/Profile";
+import { EmailVerificationSuccess } from "./pages/EmailVerificationSuccess";
 import { PageNotFound } from "./pages/PageNotFound";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -42,37 +44,38 @@ function App() {
         {/* Truy cập tự do */}
         <Route path="/" element={<Home />} />
 
-        {/*Yêu cầu đăng nhập và role phải là "customer"*/}
+        <Route path="/verify-email" element={<EmailVerificationSuccess />} />
+
         <Route
           path="/my-borrows"
           element={<ProtectedRoute element={<MyBorrow />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_USER"]} userRole={role} />}
         />
 
-        {/*Yêu cầu đăng nhập và role phải là "manager", "admin*/}
         <Route
           path="/manage-books"
           element={<ProtectedRoute element={<ManageProducts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
         />
 
-        {/*Yêu cầu đăng nhập và role phải là "manager", "admin*/}
         <Route
           path="/manage-accounts"
           element={<ProtectedRoute element={<ManageAccounts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
         />
 
-        {/*Yêu cầu đăng nhập và role phải là "manager", "admin*/}
         <Route
           path="/manage-systems"
           element={<ProtectedRoute element={<SystemConfigs />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
         />
 
-        {/*Chỉ có thể truy cập nếu chưa đăng nhập*/}
+        <Route
+          path="/manage-activity-logs"
+          element={<ProtectedRoute element={<ManageActivityLog />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+        />
+
         <Route
           path="/login"
           element={<ProtectedRoute element={<Login />} allowGuest={true} isLoggedIn={isLoggedIn} requiredNotLogged={true} />}
         />
 
-        {/*Yêu cầu phải đăng nhập*/}
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} isLoggedIn={isLoggedIn} />}

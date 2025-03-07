@@ -1,0 +1,53 @@
+.activity-log-modal .p-dialog-content {
+    padding: 0;
+}
+
+.activity-log-card {
+    margin: 1rem;
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.timestamp {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.log-content {
+    padding: 1rem;
+}
+
+.log-info p {
+    margin: 0.5rem 0;
+}
+
+.data-changes {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.old-data, .new-data {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.old-data h4, .new-data h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+pre {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
