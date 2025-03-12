@@ -8,7 +8,7 @@ import '../assets/css/EmailVerificationSuccess.css';
 
 export const EmailVerificationSuccess = () => {
     const [verificationStatus, setVerificationStatus] = useState(null);
-    const [countdown, setCountdown] = useState(10); // State để đếm ngược
+    const [countdown, setCountdown] = useState(10);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -37,7 +37,6 @@ export const EmailVerificationSuccess = () => {
     }, [location.search]);
 
     useEffect(() => {
-        // Đếm ngược và chuyển hướng khi xác nhận thành công
         if (verificationStatus?.success) {
             const interval = setInterval(() => {
                 setCountdown((prev) => {
@@ -48,9 +47,8 @@ export const EmailVerificationSuccess = () => {
                     }
                     return prev - 1;
                 });
-            }, 1000); // Giảm mỗi 1 giây
+            }, 1000);
 
-            // Cleanup interval khi component unmount
             return () => clearInterval(interval);
         }
     }, [verificationStatus, navigate]);

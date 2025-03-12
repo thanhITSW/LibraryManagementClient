@@ -32,7 +32,7 @@ export const Profile = () => {
         email: "",
         phone: ""
     });
-    
+
     const [alert, setAlert] = useState(null);
     const [activeMenu, setActiveMenu] = useState("profile");
     const [showOtpDialog, setShowOtpDialog] = useState(false);
@@ -44,7 +44,7 @@ export const Profile = () => {
         setAlert({ message, type });
         setTimeout(() => setAlert(null), 3000);
     };
-    
+
     useEffect(() => {
         setLoading(true);
         const fetchUserData = async () => {
@@ -98,12 +98,12 @@ export const Profile = () => {
 
             const response = await api.post(endpoint, payload, { requiresAuth: true });
 
-            if(response.status === 200) {
+            if (response.status === 200) {
                 setUser(prev => ({
                     ...prev,
                     [otpType]: payload[otpType]
                 }));
-                
+
                 setShowOtpDialog(false);
                 setNewContact({
                     email: "",
@@ -148,36 +148,40 @@ export const Profile = () => {
             newPassword: PasswordDetails.newPassword
         };
 
-        api.put("/user/accounts/change-password", requestData, 
+        api.put("/user/accounts/change-password", requestData,
             { requiresAuth: true })
-        .then(response => {
-            showAlert(response.data.message, "success");
-            setPasswordDetails({
-                currentPassword: '',
-                newPassword: '',
+            .then(response => {
+                showAlert(response.data.message, "success");
+                setPasswordDetails({
+                    currentPassword: '',
+                    newPassword: '',
+                });
+                setLoading(false);
+            })
+            .catch(error => {
+                const { message, statusMessage } = getErrorMessage(error.response);
+                showAlert(message, statusMessage);
+                setLoading(false);
             });
-            setLoading(false);
-        })
-        .catch(error => {
-            const { message, statusMessage } = getErrorMessage(error.response);
-            showAlert(message, statusMessage);
-            setLoading(false);
-        });
     };
 
 
     const handleLogout = async () => {
-        setLoading(true);
-        const response = await api.post("/common/auth/logout", {token})
-        if (response.status === 204) {
+        try {
+            setLoading(true);
+            const response = await api.post("/common/auth/logout", { token });
+            if (response.status === 204) {
+                localStorage.clear();
+                window.location.href = "/";
+            }
+        } catch (error) {
             setLoading(false);
-            localStorage.clear();
-            window.location.href = "/";
+            showAlert("Logout failed", "error");
         }
     };
-    
+
     const renderContent = () => {
-        switch(activeMenu) {
+        switch (activeMenu) {
             case "profile":
                 return (
                     <div className="profile-info">
@@ -186,7 +190,7 @@ export const Profile = () => {
                             <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" alt="Avatar" />
                         </div>
                         <label>Email:</label>
-                        <input type="text" value={user.email} disabled/>
+                        <input type="text" value={user.email} disabled />
                         <label>First Name:</label>
                         <input type="text" value={user.firstName} disabled />
                         <label>Last Name:</label>
@@ -202,14 +206,14 @@ export const Profile = () => {
                     <div className="profile-info">
                         <h2>Change Password</h2>
                         <label>Current Password:</label>
-                        <input 
-                            type="password" 
+                        <input
+                            type="password"
                             value={PasswordDetails.currentPassword}
                             onChange={(e) => handleChangeFieldPassword(e, "currentPassword")}
                         />
                         <label>New Password:</label>
-                        <input 
-                            type="password" 
+                        <input
+                            type="password"
                             value={PasswordDetails.newPassword}
                             onChange={(e) => handleChangeFieldPassword(e, "newPassword")}
                         />
@@ -221,10 +225,10 @@ export const Profile = () => {
                     <div className="profile-info">
                         <h2>Change Email</h2>
                         <label>New Email:</label>
-                        <input 
-                            type="email" 
+                        <input
+                            type="email"
                             value={newContact.email}
-                            onChange={(e) => setNewContact({...newContact, email: e.target.value})} 
+                            onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
                         />
                         <button onClick={() => handleRequestOtp("email")}>
                             Change Email
@@ -236,10 +240,10 @@ export const Profile = () => {
                     <div className="profile-info">
                         <h2>Change Phone</h2>
                         <label>New Phone:</label>
-                        <input 
-                            type="tel" 
+                        <input
+                            type="tel"
                             value={newContact.phone}
-                            onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
+                            onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
                         />
                         <button onClick={() => handleRequestOtp("phone")}>
                             Change Phone
@@ -247,8 +251,7 @@ export const Profile = () => {
                     </div>
                 );
             case "logout":
-                handleLogout();
-                return null;
+                return <div>Logging out...</div>;
             default:
                 return null;
         }
@@ -262,7 +265,7 @@ export const Profile = () => {
             <div className="profile-wrapper">
                 <div className="sidebar">
                     <ul className="sidebar-menu">
-                        <li 
+                        <li
                             className={activeMenu === "profile" ? "active" : ""}
                             onClick={() => setActiveMenu("profile")}
                         >
@@ -270,19 +273,19 @@ export const Profile = () => {
                         </li>
                         {role === "ROLE_USER" && (
                             <>
-                                <li 
+                                <li
                                     className={activeMenu === "change-password" ? "active" : ""}
                                     onClick={() => setActiveMenu("change-password")}
                                 >
                                     Change Password
                                 </li>
-                                <li 
+                                <li
                                     className={activeMenu === "change-email" ? "active" : ""}
                                     onClick={() => setActiveMenu("change-email")}
                                 >
                                     Change Email
                                 </li>
-                                <li 
+                                <li
                                     className={activeMenu === "change-phone" ? "active" : ""}
                                     onClick={() => setActiveMenu("change-phone")}
                                 >
@@ -290,9 +293,9 @@ export const Profile = () => {
                                 </li>
                             </>
                         )}
-                        <li 
+                        <li
                             className={activeMenu === "logout" ? "active" : ""}
-                            onClick={() => setActiveMenu("logout")}
+                            onClick={handleLogout}
                         >
                             Logout
                         </li>
@@ -303,21 +306,21 @@ export const Profile = () => {
                 </div>
             </div>
 
-            <Dialog 
-                header={`Enter OTP for ${otpType}`} 
-                visible={showOtpDialog} 
+            <Dialog
+                header={`Enter OTP for ${otpType}`}
+                visible={showOtpDialog}
                 style={{ width: '30vw' }}
                 className="custom-otp-dialog"
                 onHide={() => setShowOtpDialog(false)}
             >
                 <div className="otp-container">
-                    <InputOtp 
-                        value={otpValue} 
+                    <InputOtp
+                        value={otpValue}
                         onChange={(e) => setOtpValue(e.value)}
                         length={6}
                         integerOnly
                     />
-                    <button 
+                    <button
                         onClick={handleVerifyOtp}
                         className="custom-otp-button"
                         style={{ marginTop: '1rem' }}

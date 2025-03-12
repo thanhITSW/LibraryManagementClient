@@ -5,6 +5,7 @@ import AlertMessage from "../utils/AlertMessage"
 import { getErrorMessage } from "../utils/ErrorHandler";
 import { Calendar } from 'primereact/calendar';
 import api from "../services/api";
+import { useNavigate } from 'react-router-dom';
 import { FaCalendarDay, FaPhone, FaUserPlus } from "react-icons/fa";
 
 import user_icon from '../assets/image/person.png';
@@ -22,6 +23,7 @@ export const Login = () => {
     const [code, setCode] = useState(0);
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState(null);
+    const navigate = useNavigate();
 
     const showAlert = (message, type = "success") => {
         setAlert({ message, type });
@@ -39,6 +41,14 @@ export const Login = () => {
 
             if (response.status === 200) {
                 const token = response.data.access_token;
+
+                if(response.data.firstLogin === true) {
+                    navigate('/force-change-password')
+                    localStorage.setItem('token', token);
+                    localStorage.setItem("firstLogin", true);
+                    return;
+                }
+
                 if (token) {
                     const decoded = jwtDecode(token);
                     localStorage.setItem('role', decoded.scope);

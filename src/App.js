@@ -9,6 +9,7 @@ import { ManageActivityLog } from "./pages/ManageActivityLog";
 import { Login } from "./pages/Login";
 import { Profile } from "./pages/Profile";
 import { EmailVerificationSuccess } from "./pages/EmailVerificationSuccess";
+import { ForceChangePassword } from "./pages/ForceChangePassword";
 import { PageNotFound } from "./pages/PageNotFound";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -20,6 +21,7 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [role, setRole] = useState(localStorage.getItem("role") || "guest");
+  const firstLogin = localStorage.getItem("firstLogin") === "true";
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -44,7 +46,9 @@ function App() {
         {/* Truy cập tự do */}
         <Route path="/" element={<Home />} />
 
-        <Route path="/verify-email" element={<EmailVerificationSuccess />} />
+        <Route path="/verify-email" element={<EmailVerificationSuccess />} /> 
+
+        <Route path="/force-change-password" element={<ProtectedRoute element={<ForceChangePassword />} firstLogin={firstLogin} />} />
 
         <Route
           path="/my-borrows"

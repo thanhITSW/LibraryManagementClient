@@ -209,14 +209,18 @@ export const ManageProducts = () => {
         formData.append("file", file);
 
         try {
-            const response = await api.post("/admin/books/import-csv", formData, { requiresAuth: true }, 
+            const response = await api.post("/admin/books/import-csv", formData, 
                 {headers: {
-                    "Content-Type": "multipart/form-data"
-                }}
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                }},
             );
 
             if(response.status === 200){
                 showAlert(response.data.message, "success");
+                const refreshedResponse = await api.get("/admin/books", { requiresAuth: true });
+                setProducts(refreshedResponse.data);
+                setTotalRecords(refreshedResponse.data.length);
                 fileUploadRef.current.clear();
             }
 

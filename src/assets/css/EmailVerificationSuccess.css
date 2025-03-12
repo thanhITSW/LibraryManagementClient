@@ -15,7 +15,6 @@
     border-radius: 10px;
 }
 
-/* Đảm bảo button full width trên mobile */
 @media (max-width: 768px) {
     .verification-card {
         margin: 0 1rem;
@@ -28,4 +27,8 @@
 
 .p-button-success{
     margin-top: 20px;
+}
+
+.p-button-secondary{
+    margin-left: 20px
 }
