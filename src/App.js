@@ -21,12 +21,13 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [role, setRole] = useState(localStorage.getItem("role") || "guest");
-  const firstLogin = localStorage.getItem("firstLogin") === "true";
+  const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstLogin") === "true");
 
   useEffect(() => {
     const handleStorageChange = () => {
       setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
       setRole(localStorage.getItem("role") || "guest");
+      setFirstLogin(localStorage.getItem("firstLogin") === "true");
     };
 
     window.addEventListener("storage", handleStorageChange);

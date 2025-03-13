@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ element, isLoggedIn, userRole, requiredRole, allowGuest, requiredNotLogged }) => {
+const ProtectedRoute = ({ element, isLoggedIn, userRole, requiredRole, allowGuest, requiredNotLogged, firstLogin }) => {
     // Chặn người dùng đã đăng nhập truy cập, sau đó chuyển hướng về trang chủ
     if (requiredNotLogged && isLoggedIn) {
         return <Navigate to="/" replace />;
@@ -9,6 +9,12 @@ const ProtectedRoute = ({ element, isLoggedIn, userRole, requiredRole, allowGues
     // Cho phép khách truy cập khi chưa đăng nhập
     if (allowGuest && !isLoggedIn) {
         return element;
+    }
+
+    if (typeof firstLogin !== "undefined") {
+        if (firstLogin) {
+            return element;
+        }
     }
 
     // Nếu yêu cầu đăng nhập nhưng chưa đăng nhập

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext'; // Thay Password bằng InputText
+import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import api from "../services/api";
@@ -71,7 +71,7 @@ export const ForceChangePassword = () => {
                             <span className="p-float-label">
                                 <InputText
                                     id="newPassword"
-                                    type="password" // Vẫn giữ type="password" để ẩn ký tự
+                                    type="password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     className="p-inputtext-lg"
@@ -84,7 +84,7 @@ export const ForceChangePassword = () => {
                             <span className="p-float-label">
                                 <InputText
                                     id="confirmPassword"
-                                    type="password" // Vẫn giữ type="password" để ẩn ký tự
+                                    type="password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     className="p-inputtext-lg"
