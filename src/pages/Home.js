@@ -40,7 +40,6 @@ const SearchBox = ({ searchTerm, setSearchTerm }) => {
     );
 };
 
-// Component lọc theo thương hiệu
 const CategoryFilter = ({ categorys, selectedCategory, setSelectedCategory }) => (
     <div className="brand-filter">
         <label>Category:</label>
@@ -53,7 +52,6 @@ const CategoryFilter = ({ categorys, selectedCategory, setSelectedCategory }) =>
 );
 
 
-// Component hiển thị sản phẩm
 const BookCard = ({ product, onAddToCart, onClick }) => (
     <div className="product-card" onClick={() => onClick(product.id)}>
         <img src={product.imageUrl} alt={product.title} className="product-image" />
@@ -207,7 +205,7 @@ export const Home = () => {
 
     const currentProducts = filteredProducts.slice(first, first + rowsPerPage);
 
-    if (loading) return <div className="loading">Loading products...</div>;
+    if (loading) return <div className="loading-spinner"></div>;
 
     return (
         <>

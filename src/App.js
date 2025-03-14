@@ -11,19 +11,38 @@ import { Profile } from "./pages/Profile";
 import { EmailVerificationSuccess } from "./pages/EmailVerificationSuccess";
 import { ForceChangePassword } from "./pages/ForceChangePassword";
 import { PageNotFound } from "./pages/PageNotFound";
+import { MaintenancePage } from "./pages/MaintenancePage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./utils/ProtectedRoute";
-
 import { AuthProvider } from "./services/AuthContext";
+import api from "./services/api";
 
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [role, setRole] = useState(localStorage.getItem("role") || "guest");
   const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstLogin") === "true");
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const checkMaintenanceMode = async () => {
+    try {
+      const response = await api.get("/common/system-config");
+
+      const data = response.data
+      setIsMaintenance(data.maintenanceMode);
+    } catch (error) {
+      setIsMaintenance(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
+    checkMaintenanceMode();
+
     const handleStorageChange = () => {
       setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
       setRole(localStorage.getItem("role") || "guest");
@@ -37,60 +56,80 @@ function App() {
     };
   }, []);
 
+  if (loading) return <div className="loading-spinner"></div>;
+
   return (
     <>
-    <AuthProvider>
-      {/* <Popup /> */}
-      <Header />
+      <AuthProvider>
+        {/* <Popup /> */}
+        <Header />
 
-      <Routes>
-        {/* Truy cập tự do */}
-        <Route path="/" element={<Home />} />
+        {isMaintenance ? (
+          <Routes>
+            <Route
+              path="/login"
+              element={<ProtectedRoute element={<Login />} allowGuest={true} isLoggedIn={isLoggedIn} requiredNotLogged={true} />}
+            />
+            <Route
+              path="/manage-systems"
+              element={<ProtectedRoute element={<SystemConfigs />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
+            <Route
+              path="/profile"
+              element={<ProtectedRoute element={<Profile />} isLoggedIn={isLoggedIn} />}
+            />
+            <Route path="*" element={<MaintenancePage />} />
+          </Routes>
+        ) : (
+          <Routes>
+            {/* Truy cập tự do */}
+            <Route path="/" element={<Home />} />
 
-        <Route path="/verify-email" element={<EmailVerificationSuccess />} /> 
+            <Route path="/verify-email" element={<EmailVerificationSuccess />} />
 
-        <Route path="/force-change-password" element={<ProtectedRoute element={<ForceChangePassword />} firstLogin={firstLogin} />} />
+            <Route path="/force-change-password" element={<ProtectedRoute element={<ForceChangePassword />} firstLogin={firstLogin} />} />
 
-        <Route
-          path="/my-borrows"
-          element={<ProtectedRoute element={<MyBorrow />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_USER"]} userRole={role} />}
-        />
+            <Route
+              path="/my-borrows"
+              element={<ProtectedRoute element={<MyBorrow />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_USER"]} userRole={role} />}
+            />
 
-        <Route
-          path="/manage-books"
-          element={<ProtectedRoute element={<ManageProducts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
-        />
+            <Route
+              path="/manage-books"
+              element={<ProtectedRoute element={<ManageProducts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
 
-        <Route
-          path="/manage-accounts"
-          element={<ProtectedRoute element={<ManageAccounts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
-        />
+            <Route
+              path="/manage-accounts"
+              element={<ProtectedRoute element={<ManageAccounts />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
 
-        <Route
-          path="/manage-systems"
-          element={<ProtectedRoute element={<SystemConfigs />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
-        />
+            <Route
+              path="/manage-systems"
+              element={<ProtectedRoute element={<SystemConfigs />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
 
-        <Route
-          path="/manage-activity-logs"
-          element={<ProtectedRoute element={<ManageActivityLog />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
-        />
+            <Route
+              path="/manage-activity-logs"
+              element={<ProtectedRoute element={<ManageActivityLog />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
 
-        <Route
-          path="/login"
-          element={<ProtectedRoute element={<Login />} allowGuest={true} isLoggedIn={isLoggedIn} requiredNotLogged={true} />}
-        />
+            <Route
+              path="/login"
+              element={<ProtectedRoute element={<Login />} allowGuest={true} isLoggedIn={isLoggedIn} requiredNotLogged={true} />}
+            />
 
-        <Route
-          path="/profile"
-          element={<ProtectedRoute element={<Profile />} isLoggedIn={isLoggedIn} />}
-        />
+            <Route
+              path="/profile"
+              element={<ProtectedRoute element={<Profile />} isLoggedIn={isLoggedIn} />}
+            />
 
-        <Route path="*" element={<PageNotFound />} />
+            <Route path="*" element={<PageNotFound />} />
 
-      </Routes>
+          </Routes>
+        )}
 
-      <Footer />
+        <Footer />
       </AuthProvider>
     </>
   );

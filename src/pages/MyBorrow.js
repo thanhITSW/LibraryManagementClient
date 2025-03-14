@@ -74,8 +74,8 @@ export const MyBorrow = () => {
         setIsModalOpen(false);
     };
 
-    if (loading) return <div className="loading">Loading books...</div>;
-
+    if (loading) return <div className="loading-spinner"></div>;
+    
     return (
         <div className="my-borrows">
             <h2>My list borrow books</h2>

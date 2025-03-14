@@ -1,0 +1,68 @@
+.maintenance-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+}
+
+.maintenance-card-common {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: white;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.maintenance-header {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+    background: #2c3e50;
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.maintenance-header h1 {
+    margin: 1rem 0 0;
+    font-size: 1.8rem;
+    color: red;
+}
+
+.maintenance-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.maintenance-message {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+}
+
+.spin-icon {
+    animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

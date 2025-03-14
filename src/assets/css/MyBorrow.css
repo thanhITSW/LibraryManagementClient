@@ -9,7 +9,8 @@
     margin-bottom: 100px;
 }
 
-.borrows-table th, .borrows-table td {
+.borrows-table th,
+.borrows-table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;

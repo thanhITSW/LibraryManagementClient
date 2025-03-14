@@ -42,7 +42,7 @@ export const Login = () => {
             if (response.status === 200) {
                 const token = response.data.access_token;
 
-                if(response.data.firstLogin === true) {
+                if (response.data.firstLogin === true) {
                     navigate('/force-change-password')
                     localStorage.setItem('token', token);
                     localStorage.setItem("firstLogin", true);
@@ -77,7 +77,7 @@ export const Login = () => {
                 email,
                 password
             });
-    
+
             if (response.status === 201) {
                 setLoading(false);
                 showAlert("Register successfully! Please check email to active account", "success");
@@ -85,7 +85,7 @@ export const Login = () => {
             }
         } catch (error) {
             setLoading(false);
-    
+
             const { message, statusMessage } = getErrorMessage(error.response);
             showAlert(message, statusMessage);
         }
@@ -95,7 +95,7 @@ export const Login = () => {
         try {
             setLoading(true);
             const response = await api.post('/common/accounts/reset-pass', { email });
-    
+
             if (response.status === 200) {
                 setLoading(false);
                 showAlert("The password reset request has been sent! Please check your email.", "success");
@@ -103,7 +103,7 @@ export const Login = () => {
             }
         } catch (error) {
             setLoading(false);
-    
+
             const { message, statusMessage } = getErrorMessage(error.response);
             showAlert(message, statusMessage);
         }
@@ -113,14 +113,14 @@ export const Login = () => {
         try {
             setLoading(true);
             const response = await api.post('/common/accounts/resend-link-active-account', { email });
-    
+
             if (response.status === 200) {
                 setLoading(false);
                 showAlert("The active account request has been sent! Please check your email.", "success");
             }
         } catch (error) {
             setLoading(false);
-    
+
             const { message, statusMessage } = getErrorMessage(error.response);
             showAlert(message, statusMessage);
         }
@@ -139,29 +139,29 @@ export const Login = () => {
                 <div className="inputs">
                     {action === "Sign Up" && (
                         <>
-                        <div className="input">
-                            <img src={user_icon} alt="" />
-                            <input type="text" placeholder='First Name' value={firstName} 
-                               onChange={(e) => setFirstName(e.target.value)} />
-                        </div>
+                            <div className="input">
+                                <img src={user_icon} alt="" />
+                                <input type="text" placeholder='First Name' value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)} />
+                            </div>
 
-                        <div className="input">
-                            <FaUserPlus className="custom-icon"/>
-                            <input type="text" placeholder='Last Name' value={lastName} 
-                               onChange={(e) => setLastName(e.target.value)} />
-                        </div>
+                            <div className="input">
+                                <FaUserPlus className="custom-icon" />
+                                <input type="text" placeholder='Last Name' value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)} />
+                            </div>
 
-                        <div className="input">
-                            <FaCalendarDay className="custom-icon"/>
-                            <Calendar dateFormat='yy-mm-dd' placeholder='Date of birth'
-                                value={dob} onChange={(e) => setDob(e.target.value)}/>
-                        </div>
+                            <div className="input">
+                                <FaCalendarDay className="custom-icon" />
+                                <Calendar dateFormat='yy-mm-dd' placeholder='Date of birth'
+                                    value={dob} onChange={(e) => setDob(e.target.value)} />
+                            </div>
 
-                        <div className="input">
-                            <FaPhone className="custom-icon"/>
-                            <input type="text" placeholder='Phone' value={phone} 
-                               onChange={(e) => setPhone(e.target.value)} />
-                        </div>
+                            <div className="input">
+                                <FaPhone className="custom-icon" />
+                                <input type="text" placeholder='Phone' value={phone}
+                                    onChange={(e) => setPhone(e.target.value)} />
+                            </div>
                         </>
                     )}
 
@@ -169,7 +169,7 @@ export const Login = () => {
                         <>
                             <div className="input">
                                 <img src={email_icon} alt="" />
-                                <input type="email" placeholder='Email' value={email} 
+                                <input type="email" placeholder='Email' value={email}
                                     onChange={(e) => setEmail(e.target.value)} />
                             </div>
 
@@ -186,8 +186,8 @@ export const Login = () => {
                     {action === "Lost Password" && (
                         <div className="input">
                             <img src={email_icon} alt="" />
-                            <input type="email" placeholder='Email' value={email} 
-                                onChange={(e) => setEmail(e.target.value)}/>
+                            <input type="email" placeholder='Email' value={email}
+                                onChange={(e) => setEmail(e.target.value)} />
                         </div>
                     )}
                 </div>
@@ -214,19 +214,21 @@ export const Login = () => {
                         </>
                     ) : (
                         <>
-                            <div className={action === "Login" ? "submit gray" : "submit"} 
-                                onClick={() => { setAction("Sign Up"); 
+                            <div className={action === "Login" ? "submit gray" : "submit"}
+                                onClick={() => {
+                                    setAction("Sign Up");
                                     if (action === "Sign Up") {
                                         handleRegister();
                                     }
                                 }}>Sign Up</div>
 
                             <div className={action === "Sign Up" ? "submit gray" : "submit"}
-                                onClick={() => { setAction("Login"); 
+                                onClick={() => {
+                                    setAction("Login");
                                     if (action === "Login") {
                                         handleLogin();
                                     }
-                                } }>Login</div>
+                                }}>Login</div>
                         </>
                     )}
                 </div>

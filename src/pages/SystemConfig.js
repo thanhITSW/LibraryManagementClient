@@ -30,7 +30,7 @@ export const SystemConfigs = () => {
         }
 
         setLoading(true);
-        api.get(`/admin/system-config`, { requiresAuth: true })
+        api.get(`/common/system-config`)
             .then(response => {
                 const data = response.data
                 setIsMaintenanceMode(data.maintenanceMode);
@@ -48,7 +48,7 @@ export const SystemConfigs = () => {
 
         api.post(`/admin/system-config/maintenance`, {
             maintenanceMode: !isMaintenanceMode
-        },{ requiresAuth: true })
+        }, { requiresAuth: true })
             .then(response => {
                 setIsMaintenanceMode(!isMaintenanceMode);
                 setLoading(false);

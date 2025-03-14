@@ -19,16 +19,16 @@
     .verification-card {
         margin: 0 1rem;
     }
-    
+
     .p-button {
         width: 100%;
     }
 }
 
-.p-button-success{
+.p-button-success {
     margin-top: 20px;
 }
 
-.p-button-secondary{
+.p-button-secondary {
     margin-left: 20px
 }
