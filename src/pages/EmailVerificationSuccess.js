@@ -75,7 +75,7 @@ export const EmailVerificationSuccess = () => {
                     <Button
                         label="Go Back"
                         icon="pi pi-arrow-left"
-                        className="p-button-secondary p-mt-3"
+                        className="p-button-secondary-email p-mt-3"
                         onClick={() => navigate('/')}
                     />
                 </Card>
@@ -102,7 +102,7 @@ export const EmailVerificationSuccess = () => {
                     <Button
                         label="Continue"
                         icon="pi pi-arrow-right"
-                        className="p-button-success"
+                        className="p-button-success-email"
                         onClick={handleContinue}
                     />
                 </div>
