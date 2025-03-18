@@ -60,7 +60,6 @@ export const ManageProducts = () => {
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
-    let dt = useRef(null);
     const fileUploadRef = useRef(null);
 
     const token = localStorage.getItem("token");
@@ -233,6 +232,34 @@ export const ManageProducts = () => {
         }
     };
 
+    const exportAllToCSV = () => {
+        const headers = [
+            "Title",
+            "Author",
+            "Category",
+            "Total Copies",
+            "Available Copies"
+        ];
+
+        const csvRows = products.map(product => [
+            `"${product.title || ''}"`,
+            `"${product.author || ''}"`,
+            `"${product.category || ''}"`,
+            product.totalCopies || 0,
+            product.availableCopies || 0
+        ].join(","));
+
+        const csvContent = [headers.join(","), ...csvRows].join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'all_books.csv';
+        link.click();
+        window.URL.revokeObjectURL(url);
+    };
+
     if (loading) return <div className="loading-spinner"></div>;
     return (
         <>
@@ -253,7 +280,7 @@ export const ManageProducts = () => {
 
                 <div className="button-group">
                     <Button label="Add New Book" className="p-button-sm p-button-success add-button" onClick={() => addProductModel()} />
-                    <Button label="Export CSV" className="p-button-sm p-button-info export-button" onClick={() => dt.exportCSV()} />
+                    <Button label="Export CSV" className="p-button-sm p-button-info export-button" onClick={exportAllToCSV} />
                     <FileUpload
                         ref={fileUploadRef}
                         name="csvFile"
@@ -270,7 +297,7 @@ export const ManageProducts = () => {
                     <p>No products available.</p>
                 ) : (
                     <>
-                        <DataTable ref={(el) => (dt = el)} value={products.slice(first, first + rowsPerPage)} paginator={false} responsiveLayout="scroll">
+                        <DataTable value={products.slice(first, first + rowsPerPage)} paginator={false} responsiveLayout="scroll">
                             <Column field="title" header="Title" sortable />
                             <Column body={imageBodyTemplate} header="Image" />
                             <Column field="author" header="Author" sortable />

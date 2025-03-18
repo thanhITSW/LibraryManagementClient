@@ -97,22 +97,23 @@ const EditProductModel = ({ visible, productId, onClose }) => {
         setLoading(true)
         api.put(`/admin/books/${productId}`, data, { requiresAuth: true },
             {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
             .then(response => {
                 setLoading(false)
                 const updatedProduct = response.data;
-                if (selectedImage) {   
+                if (selectedImage) {
                     formData.append("file", selectedImage);
-                    
-                    api.post(`/admin/books/${updatedProduct.id}/upload`, formData, { requiresAuth: true },
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    })
+
+                    api.post(`/admin/books/${updatedProduct.id}/upload`, formData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
                 }
 
                 onClose(true, "Update Book successfully", updatedProduct);
@@ -156,7 +157,7 @@ const EditProductModel = ({ visible, productId, onClose }) => {
                         <label>Available Copies</label>
                         <InputNumber value={productDetails.availableCopies} onValueChange={(e) => handleChange(e, "availableCopies")} />
                     </div>
-    
+
                     <div className="p-field image-upload-container">
                         <label>Image</label>
                         <div className="image-preview">

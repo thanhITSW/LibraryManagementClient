@@ -189,8 +189,8 @@ export const Home = () => {
                 showAlert(response.data.message, "success");
             })
             .catch(error => {
-                const { message, statusMessage } = getErrorMessage(error.response);
-                showAlert(message, statusMessage);
+                const { statusMessage } = getErrorMessage(error.response);
+                showAlert("You not permisson borrow book", statusMessage);
             });
     };
 

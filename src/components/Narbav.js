@@ -19,6 +19,7 @@ export const Navbar = () => {
 
             {isLoggedIn && (role === "ROLE_ADMIN") && <NavLink to="/manage-systems">Systems</NavLink>}
             {isLoggedIn && (role === "ROLE_ADMIN") && <NavLink to="/manage-activity-logs">Activity Logs</NavLink>}
+            {isLoggedIn && (role === "ROLE_ADMIN") && <NavLink to="/report">Report</NavLink>}
 
             {
                 isLoggedIn === true ? (

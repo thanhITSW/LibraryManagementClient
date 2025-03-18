@@ -12,6 +12,7 @@ import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { Button } from 'primereact/button';
 import { FaSearch } from 'react-icons/fa';
+import { InputText } from 'primereact/inputtext';
 import ActivityLogDetails from "../components/ActivityLogDetails";
 
 const SearchBox = ({ searchTerm, setSearchTerm }) => {
@@ -56,12 +57,18 @@ export const ManageActivityLog = () => {
     const [isModalOpenDetails, setIsModalOpenDetails] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [filteredLogs, setFilteredLogs] = useState([]);
+    const [actionFilter, setActionFilter] = useState("");
 
     const token = localStorage.getItem("token");
 
     const showAlert = (message, type = "success") => {
         setAlert({ message, type });
         setTimeout(() => setAlert(null), 3000);
+    };
+
+    const sortLogsByTimestamp = (data) => {
+        return [...data].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     };
 
     useEffect(() => {
@@ -72,8 +79,11 @@ export const ManageActivityLog = () => {
         setLoading(true);
         api.get(`/admin/activity-log`, { requiresAuth: true })
             .then(response => {
-                setLogs(response.data);
-                setTotalRecords(response.data.length);
+                const data = response.data;
+                const sortedData = sortLogsByTimestamp(data); // Sort data by timestamp
+                setLogs(sortedData);
+                setFilteredLogs(sortedData);
+                setTotalRecords(sortedData.length);
                 setLoading(false);
             })
             .catch(error => {
@@ -98,8 +108,8 @@ export const ManageActivityLog = () => {
         api.get(url, { requiresAuth: true })
             .then(response => {
                 const data = response.data.content || response.data || [];
-                setLogs(data);
-                setTotalRecords(data.length);
+                const sortedData = sortLogsByTimestamp(data); // Sort data by timestamp
+                setLogs(sortedData);
                 setLoading(false);
             })
             .catch(error => {
@@ -127,6 +137,36 @@ export const ManageActivityLog = () => {
         return <Button label="View" className="p-button-sm p-button-info" onClick={() => viewDetails(rowData)} />;
     };
 
+    const applyActionFilter = (data, filterValue) => {
+        const filtered = filterValue
+            ? data.filter(log => log.action.toLowerCase().includes(filterValue.toLowerCase()))
+            : data;
+        setFilteredLogs(filtered);
+        setTotalRecords(filtered.length);
+    };
+
+    // Handle action filter input change
+    const onActionFilterChange = (e) => {
+        const value = e.target.value;
+        setActionFilter(value);
+        applyActionFilter(logs, value); // Filter the full dataset
+    };
+
+    const actionFilterHeader = (
+        <InputText
+            value={actionFilter}
+            onChange={onActionFilterChange}
+            placeholder="Filter by Action"
+            style={{ width: '100%' }}
+        />
+    );
+
+    const onFilter = (e) => {
+        const filterValue = e.filters.action?.value || "";
+        setActionFilter(filterValue);
+        applyActionFilter(logs, filterValue);
+    };
+
     if (loading) return <div className="loading-spinner"></div>;
     return (
         <>
@@ -138,9 +178,22 @@ export const ManageActivityLog = () => {
                     <p>No members available.</p>
                 ) : (
                     <>
-                        <DataTable value={logs.slice(first, first + rowsPerPage)} paginator={false} responsiveLayout="scroll">
+                        <DataTable value={filteredLogs.slice(first, first + rowsPerPage)} paginator={false} responsiveLayout="scroll"
+                            onFilter={onFilter}
+                            filters={{
+                                action: { value: actionFilter, matchMode: 'contains' }
+                            }}
+                        >
                             <Column field="performedBy" header="Perform By" sortable />
-                            <Column field="action" header="Action" sortable />
+                            <Column
+                                field="action"
+                                header="Action"
+                                sortable
+                                filter
+                                filterMatchMode="contains"
+                                filterElement={actionFilterHeader}
+                                showFilterMenu={true}
+                            />
                             <Column field="description" header="Description" />
                             <Column field="timestamp" header="Time Stamp" sortable />
                             <Column body={detailsBodyTemplate} header="Details" />

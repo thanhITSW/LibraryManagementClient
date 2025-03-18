@@ -12,6 +12,7 @@ import { EmailVerificationSuccess } from "./pages/EmailVerificationSuccess";
 import { ForceChangePassword } from "./pages/ForceChangePassword";
 import { PageNotFound } from "./pages/PageNotFound";
 import { MaintenancePage } from "./pages/MaintenancePage";
+import { Report } from "./pages/Report";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./utils/ProtectedRoute";
@@ -112,6 +113,11 @@ function App() {
             <Route
               path="/manage-activity-logs"
               element={<ProtectedRoute element={<ManageActivityLog />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
+            />
+
+            <Route
+              path="/report"
+              element={<ProtectedRoute element={<Report />} isLoggedIn={isLoggedIn} requiredRole={["ROLE_ADMIN"]} userRole={role} />}
             />
 
             <Route

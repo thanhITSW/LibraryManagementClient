@@ -94,9 +94,10 @@ const AddProductModel = ({ visible, onClose }) => {
 
                 if (selectedImage) {   
                     formData.append("file", selectedImage);
-                    api.post(`/admin/books/${addProduct.id}/upload`, formData, { requiresAuth: true }, {
+                    api.post(`/admin/books/${addProduct.id}/upload`, formData, {
                         headers: {
-                            "Content-Type": "multipart/form-data"
+                            "Content-Type": "multipart/form-data",
+                            Authorization: `Bearer ${token}`
                         }
                     })
                 }
